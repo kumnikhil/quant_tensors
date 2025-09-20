@@ -1,0 +1,11 @@
+[project]
+name = "quant_tensors"
+version = "0.1.0"
+description = "Package for running systematic trading book"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+# This is the key part for your structure
+[tool.setuptools.packages.find]
+where = ["quant_tensors"]
+include = ["*"]
