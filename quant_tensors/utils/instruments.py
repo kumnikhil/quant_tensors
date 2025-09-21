@@ -11,6 +11,7 @@ class OptionData:
     volatility: torch.Tensor
     is_call: torch.Tensor
     premium: Optional[torch.Tensor] = None
+    implied_volatility: Optional[torch.Tensor] = None
     def __post_init__(self):
         if self.spot.shape != self.strike.shape or self.is_call.shape != self.spot.shape:
             raise ValueError("Inconsistent tensor shapes, tensors for spot,m strike and is_call should be the same")
@@ -18,6 +19,8 @@ class OptionData:
         self.strike = self.strike.to(torch.float32)
         self.tte = self.tte.to(torch.float32)
         self.volatility = self.volatility.to(torch.float32)
+        self.premium = self.premium.to(torch.float32) if isinstance(self.premium, torch.Tensor) else None
+        self.implied_volatility = self.implied_volatility.to(torch.float32) if isinstance(self.implied_volatility, torch.Tensor) else None
         self.is_call = self.is_call.to(torch.bool)
         if isinstance(self.rf_rate, float):
             self.rf_rate = torch.tensor(self.rf_rate, dtype=torch.float32)*torch.ones_like(self.strike)
