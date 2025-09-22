@@ -1,3 +1,3 @@
-from .calibrate_process import *
+from .calibrate_gbm import *
 
 __all__ = []
