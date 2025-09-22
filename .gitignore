@@ -1,6 +1,5 @@
 __pycache__/
 *.pyc
-quant_tensors/.DS_Store
-.DS_Store
-quant_tensors/quant_tensors.egg-info/SOURCES.txt
-quant_tensors/quant_tensors.egg-info/top_level.txt
+quant_tensors/.DS_Store/
+.DS_Store/
+quant_tensors.egg-info/
