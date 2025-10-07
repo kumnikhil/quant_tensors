@@ -31,9 +31,9 @@ Traditional quantitative libraries are CPU-bound and rely on slow finite-differe
 
 ### 📊 Volatility Models
 - **SVI (Stochastic Volatility Inspired)** - Arbitrage-free volatility surface parameterization
-- **SABR** - to be added
-- **Local Volatility** - Dupire's local volatility with GPU calibration
-- **Implied Volatility** - Fast Newton-Raphson on GPU
+- *SABR* - to be added
+- *Local Volatility* - Dupire's local volatility with GPU calibration
+- *Implied Volatility* - Fast Newton-Raphson on GPU
 
 ### 💰 Pricing Models
 - **Black-76** - Industry standard for commodity options
