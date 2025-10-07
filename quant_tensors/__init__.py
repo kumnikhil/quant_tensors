@@ -2,4 +2,5 @@ from .utils import instruments
 from .models import black76, bsm
 from .experimental import calibrate_gbm
 from .volatility import svi_parameteric
+from .risk import *
 __all__ = []
