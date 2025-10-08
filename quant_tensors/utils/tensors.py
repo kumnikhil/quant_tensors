@@ -70,3 +70,17 @@ def ensure_tensor(
                                f"expected {expected}, got {actual}")
     
     return tensor
+
+def clean_tensors_infnan(data: torch.Tensor) -> torch.Tensor:
+    """Remove NaN and Inf values from returns."""
+    if data.ndim == 1:
+        mask = torch.isfinite(data)
+        if not mask.all():
+            warnings.warn(f"Removing {(~mask).sum().item()} non-finite values")
+        return data[mask]
+    else:  # 2D
+        # Remove rows with any NaN/Inf
+        mask = torch.all(torch.isfinite(data), dim=1)
+        if not mask.all():
+            warnings.warn(f"Removing {(~mask).sum().item()} rows with non-finite values")
+        return data[mask]
