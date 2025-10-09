@@ -20,16 +20,16 @@ import warnings
 
 from ..utils.tensors import to_tensor, TensorLike, clean_tensors_infnan
 
-def historical_VaR(returns:TensorLike, confidence_level:float=0.95)->torch.Tensor:
+def historical_VaR(pnl_vector:TensorLike, confidence_level:float=0.95)->torch.Tensor:
     """
     Compute historical VaR at a specified confidence level.
     Args:
-        returns: Tensor of shape (n_scenarios, n_assets) or (n_scenarios,) on the 
+        pnl_vector: Tensor of shape (n_scenarios, n_assets) or (n_scenarios,) on the 
         confidence_level: Confidence level for VaR (e.g., 0.95 for 95% VaR)
     """
     if not 0.0 < confidence_level < 1.0:
         raise ValueError("confidence_level must be between 0 and 1")
-    returns_tensor = clean_tensors_infnan(to_tensor(returns, dtype=torch.float32))
+    returns_tensor = clean_tensors_infnan(to_tensor(pnl_vector, dtype=torch.float32))
     if returns_tensor.numel()==0:
         raise ValueError("returns tensor is empty")
     alpha = 1.0 - confidence_level
@@ -39,16 +39,16 @@ def historical_VaR(returns:TensorLike, confidence_level:float=0.95)->torch.Tenso
         var = torch.quantile(returns_tensor, alpha, dim=0)
     return torch.clamp(var, max=0.0)  # ensures VaR is non-positive
 
-def historical_CVaR(returns:TensorLike, confidence_level:float=0.95)->torch.Tensor:
+def historical_CVaR(pnl_vector:TensorLike, confidence_level:float=0.95)->torch.Tensor:
     """
     Compute historical Conditional VaR (CVaR) / Expected Shortfall at a specified confidence level.
     Args:
-        returns: Tensor of shape (n_scenarios, n_assets) or (n_scenarios,)
+        pnl_vector: Tensor of shape (n_scenarios, n_assets) or (n_scenarios,)
         confidence_level: Confidence level for CVaR (e.g., 0.95 for 95% CVaR)
     """
     if not 0.0 < confidence_level < 1.0:
         raise ValueError("confidence_level must be between 0 and 1")
-    returns_tensor = clean_tensors_infnan(to_tensor(returns, dtype=torch.float32))
+    returns_tensor = clean_tensors_infnan(to_tensor(pnl_vector, dtype=torch.float32))
     if returns_tensor.numel()==0:
         raise ValueError("returns tensor is empty")
     if returns_tensor.ndim == 1:
@@ -71,12 +71,12 @@ if __name__ == "__main__":
     price_change = torch.exp(log_returns) - 1.0
     flat_prices = torch.ones((252,5)) * torch.tensor([100.0,200., 10000.,15.,75.])
     prices = flat_prices * (1.0 + price_change).cumprod(dim=0)
-    returns = prices.diff(1,dim=0)
+    pnl_vec = prices.diff(1,dim=0)
 
-    var_95 = historical_VaR(returns, confidence_level=0.95)
-    var_99 = historical_VaR(returns, confidence_level=0.99)
-    cvar_95 = historical_CVaR(returns, confidence_level=0.95)
-    cvar_99 = historical_CVaR(returns, confidence_level=0.99)
+    var_95 = historical_VaR(pnl_vec, confidence_level=0.95)
+    var_99 = historical_VaR(pnl_vec, confidence_level=0.99)
+    cvar_95 = historical_CVaR(pnl_vec, confidence_level=0.95)
+    cvar_99 = historical_CVaR(pnl_vec, confidence_level=0.99)
     print(f"95% Historical VaR: {np.round(var_95.numpy(),4)}")
     print(f"99% Historical VaR: {np.round(var_99.numpy(),4)}")
     print(f"95% Historical CVaR: {np.round(cvar_95.numpy(),4)}")
